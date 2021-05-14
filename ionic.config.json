@@ -1,0 +1,7 @@
+{
+  "name": "myPrintApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
