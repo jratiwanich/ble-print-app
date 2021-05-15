@@ -1,20 +1,45 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Bluetooth Printer Tester
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <!-- <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Bluetooth Print</ion-title>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
+
+  <ion-button (click)="scanDevice()" expand="block" ><ion-icon name="bluetooth"></ion-icon>Scan</ion-button>
+  <ion-button expand="block"  color="dark"><ion-icon slot="start" name="star"  (click)="getDevice()"></ion-icon>LIST</ion-button>
+  <ion-button (click)="scanLocalDevice()" expand="block" ><ion-icon name="bluetooth"></ion-icon>Local Devices</ion-button>
+  <ion-button (click)="scanDefaultPrinter()"  color="success" expand="block" ><ion-icon name="bluetooth"></ion-icon>Default Printer</ion-button>
+
+  
+  <hr/>
+    <ion-list  *ngIf="bluetoothList"> 
+      <ion-item *ngFor="let item of bluetoothList" (click)="selectPrinter(item)">
+        <ion-label>  {{ item.name}}</ion-label>
+      </ion-item>
+    </ion-list>
+
+  <!-- <ion-list>
+    <ion-item *ngFor="let item of bluetoothList" >
+        {{item.name}} {{item.id}}
+    </ion-item>
+    </ion-list> -->
+    <div>
+        Selected Printer: {{selectedPrinter | json}}
+    </div>
+    <ion-button expand="full" color="danger"  (click)="printStuff()">
+    PRINT!
+    </ion-button>
+    
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <strong>test:</strong>
   </div>
 </ion-content>
