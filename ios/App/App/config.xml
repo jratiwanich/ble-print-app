@@ -14,5 +14,9 @@
     <param name="ios-package" value="BluetoothLePlugin"/>
   </feature>
 
+  <feature name="Printer">
+    <param name="ios-package" value="APPPrinter"/>
+  </feature>
+
   
 </widget>

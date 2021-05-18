@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PrintService } from '../services/print.service';
+import { Printer, PrintOptions } from '@ionic-native/printer/ngx';
 
 @Component({
   selector: 'app-home',
@@ -10,11 +11,36 @@ export class HomePage {
 
   bluetoothList:any=[];
   selectedPrinter:any;
+  nToast = 0;
 
-  constructor(private print: PrintService) {
+  constructor(private print: PrintService, private printer: Printer) {
     //this.print.checkBLE();
     //this.print.setupBrowsePrint();
     //this.listPrinter();
+  }
+
+  showToast(){
+    this.print.popError(`Hello Toast ${this.nToast++}`);
+  }
+
+  printHtml() {
+    this.printer.isAvailable().then((onSuccess: any) => {
+    let content = document.getElementById('printer').innerHTML;
+    let options: PrintOptions = {
+      name: 'MyDocument',
+      duplex: true,
+      orientation: "portrait",
+      monochrome: true
+    };
+
+    this.printer.print(content, options).then((value: any) => {
+      console.log('value:', value);
+    }, (error) => {
+      console.log('eror:', error);
+    });
+    }, (err) => {
+      console.log('err:', err);
+    });
   }
 
   async scanDevice(){
@@ -54,11 +80,18 @@ export class HomePage {
   }
 
   //This will print
-  printStuff()
+  printBluetooth()
   {  
     //The text that you want to print
     var myText="Hello hello hello \n\n\n This is a test \n\n\n";
     this.print.sendToBluetoothPrinter(this.selectedPrinter,myText);
+  }
+
+  async printLabel(){
+    // let res = await this.print.getMetadata();
+    // console.log("getMetadata:",res);
+   let result = await this.print.getLabel();
+    console.log("getLabel:",result);
   }
 
 }

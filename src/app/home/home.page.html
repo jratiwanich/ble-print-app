@@ -20,7 +20,7 @@
 
   
   <hr/>
-    <ion-list  *ngIf="bluetoothList"> 
+    <ion-list  *ngIf="bluetoothList" id="printer"> 
       <ion-item *ngFor="let item of bluetoothList" (click)="selectPrinter(item)">
         <ion-label>  {{ item.name}}</ion-label>
       </ion-item>
@@ -34,8 +34,17 @@
     <div>
         Selected Printer: {{selectedPrinter | json}}
     </div>
-    <ion-button expand="full" color="danger"  (click)="printStuff()">
-    PRINT!
+    <ion-button expand="full" color="danger"  (click)="printHtml()">
+      PRINT LIST
+      </ion-button>
+    <ion-button expand="full" color="danger"  (click)="printBluetooth()">
+    PRINT BLE
+    </ion-button>
+    <ion-button expand="full" color="danger"  (click)="printLabel()">
+      PRINT LABEL!
+    </ion-button>
+    <ion-button expand="full" color="danger"  (click)="showToast()">
+      Show Toast
     </ion-button>
     
 

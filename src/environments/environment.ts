@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  metadata : 'com.ns.im.MatMobility/sap/opu/odata/SAP/ZMIM_GR_APP_SRV/$metadata?X-SMP-APPID=com.ns.im.MatMobility',
+  //baseURL: 'https://mobile-d0c004beb.us2.hana.ondemand.com/',
+  baseURL: 'https://hd3ci.atldc.nscorp.com:8665/',
+  labelURL: `sap/opu/odata/SAP/ZMIM_GR_APP_SRV/PDFLabelSet(Mblnr=%275000005154%27,Mjahr=%272020%27,Mblpo=%270001%27)/$value?&filter(Printer eq 'A')`
 };
 
 /*

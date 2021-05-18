@@ -2,7 +2,12 @@ import { Injectable, NgZone } from '@angular/core';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BluetoothLE } from '@ionic-native/bluetooth-le/ngx';
 import { BLE } from '@ionic-native/ble/ngx';
-import { Platform } from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
+
+import { HttpClient, HttpHeaders } from  '@angular/common/http';
+
+import { environment } from 'src/environments/environment';
+
 
 declare var BrowserPrint: any;
 
@@ -11,15 +16,79 @@ declare var BrowserPrint: any;
 })
 export class PrintService {
 
+  printUrl = environment.baseURL;
+  
   selected_device;
   public devices = [];
 
-  constructor(private btSerial: BluetoothSerial,
+  constructor(
+    private  httpClient : HttpClient,
+    private toast: ToastController,
+    private btSerial: BluetoothSerial,
     private ble: BLE,
     private ngZone: NgZone,
     public bluetoothle: BluetoothLE, 
     public plt: Platform) { }
 
+
+    async popError(message){
+      const toast = await this.toast.create({
+        message: message,
+        header: 'NS Warning!',
+        duration: 3000,
+        color: 'danger',
+        position: 'middle',
+        buttons: [
+          {
+            side: 'end',
+            icon: 'alert-circle-outline',
+            text: 'SYSTEM ALERT',
+            handler: () => {
+              console.log('Cart Button Clicked');
+            }
+          }, {
+            side: 'end',
+            text: 'Close',
+            role: 'cancel',
+            handler: () => {
+              console.log('Close clicked');
+            }
+          }
+        ]
+        
+      });
+      await toast.present();
+      await await toast.onDidDismiss();
+    }
+
+    getMetadata(){
+      let url = this.printUrl +  environment.metadata;
+      return  this.httpClient.get(url, {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/xml',
+          'X-CSRF-Token': 'fetch',
+          'X-SMP-APPCID': 'e86e3ab4-3b87-4364-a503-f785a0787bdf'
+          }),
+        responseType: 'text',
+        observe: 'response' as 'response',
+        withCredentials:true
+      }).toPromise();
+    }
+
+  
+  getLabel(){
+    // let url1 = this.printUrl + `sap/opu/odata/SAP/ZMIM_GR_APP_SRV/PDFLabelSet(Mblnr=%275000005154%27,Mjahr=%272020%27,Mblpo=%270001%27)/$value?&filter(Printer eq 'A')`;
+    // let url2 = this.printUrl + `sap/opu/odata/sap/ZMIM_GR_APP_SRV/PDFLabelSet(Mblnr=%275000003041%27,Mjahr=%272019%27,Mblpo=%270001%27)/$value?&filter(Printer eq 'A')`;
+    
+    let url = this.printUrl +  environment.labelURL;
+    let options = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/xml',
+      }),
+      withCredentials:true
+    };
+    return this.httpClient.get(url,options).toPromise();
+  }
   scanBLE(){
     this.devices = [];
     this.ble.scan([],15).subscribe(device=>this.onDeviceFound(device));
@@ -30,6 +99,11 @@ export class PrintService {
     this.ngZone.run(()=>{
       this.devices.push(device);
       console.log("BLE Found",device);
+          // on iOS, print the manufacturer data if it exists
+        if (device.advertising && device.advertising.kCBAdvDataManufacturerData) {
+          const mfgData = new Uint8Array(device.advertising.kCBAdvDataManufacturerData);
+          console.log('Manufacturer Data is', mfgData);
+        }
     })
 
   }
